@@ -1,0 +1,244 @@
+{
+  "openapi":"3.0.0",
+  "info":{
+    "title":"AI Assistant API",
+    "description":"API contract for the AI Assistant project, providing endpoints for managing database setups and querying information.",
+    "version":"1.0.0"
+  },
+  "servers":[
+    {
+      "url":"http://localhost:8000",
+      "description":"Local development server"
+    }
+  ],
+  "paths":{
+    "/":{
+      "get":{
+        "summary":"Root Endpoint",
+        "description":"Returns a simple message to verify the service is running.",
+        "responses":{
+          "200":{
+            "description":"A welcome message.",
+            "content":{
+              "application/json":{
+                "schema":{
+                  "type":"object",
+                  "properties":{
+                    "message":{
+                      "type":"string",
+                      "example":"Hello World"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/types":{
+      "get":{
+        "summary":"Get All DB Types",
+        "description":"Returns a list of all database types.",
+        "responses":{
+          "200":{
+            "description":"A list of all database types.",
+            "content":{
+              "application/json":{
+                "schema":{
+                  "type":"array",
+                  "items":{
+                    "$ref":"#/components/schemas/NamedType"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/setup":{
+      "post":{
+        "summary":"Create New Setup",
+        "description":"Creates a new database setup.",
+        "requestBody":{
+          "required":true,
+          "content":{
+            "application/json":{
+              "schema":{
+                "$ref":"#/components/schemas/SetupRequest"
+              }
+            }
+          }
+        },
+        "responses":{
+          "200":{
+            "description":"Setup created successfully.",
+            "content":{
+              "application/json":{
+                "schema":{
+                  "type":"string",
+                  "example":"Ok"
+                }
+              }
+            }
+          },
+          "default":{
+            "description":"An error occurred.",
+            "content":{
+              "application/json":{
+                "schema":{
+                  "type":"string",
+                  "example":"Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put":{
+        "summary":"Update Setup",
+        "description":"Updates an existing database setup.",
+        "requestBody":{
+          "required":true,
+          "content":{
+            "application/json":{
+              "schema":{
+                "$ref":"#/components/schemas/SetupRequest"
+              }
+            }
+          }
+        },
+        "responses":{
+          "200":{
+            "description":"Setup updated successfully.",
+            "content":{
+              "application/json":{
+                "schema":{
+                  "type":"string",
+                  "example":"Ok"
+                }
+              }
+            }
+          },
+          "default":{
+            "description":"An error occurred.",
+            "content":{
+              "application/json":{
+                "schema":{
+                  "type":"string",
+                  "example":"Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ask":{
+      "post":{
+        "summary":"Ask a Question",
+        "description":"Allows the user to ask a question related to the database setup.",
+        "requestBody":{
+          "required":true,
+          "content":{
+            "application/json":{
+              "schema":{
+                "$ref":"#/components/schemas/QuestionRequest"
+              }
+            }
+          }
+        },
+        "responses":{
+          "200":{
+            "description":"Answer to the question.",
+            "content":{
+              "application/json":{
+                "schema":{
+                  "$ref":"#/components/schemas/AnswerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components":{
+    "schemas":{
+      "NamedType":{
+        "type":"object",
+        "properties":{
+          "Name":{
+            "type":"string",
+            "example":"MySQL"
+          },
+          "Id":{
+            "type":"integer",
+            "example":1
+          }
+        }
+      },
+      "SetupRequest":{
+        "type":"object",
+        "properties":{
+          "DBType":{
+            "$ref":"#/components/schemas/NamedType"
+          },
+          "Server":{
+            "type":"string",
+            "example":"localhost"
+          },
+          "Database":{
+            "type":"string",
+            "example":"test_db"
+          },
+          "User":{
+            "type":"string",
+            "example":"admin"
+          },
+          "Password":{
+            "type":"string",
+            "example":"password123"
+          },
+          "DDL":{
+            "type":"array",
+            "items":{
+              "type":"string"
+            },
+            "example":[
+              "CREATE TABLE users (...)",
+              "CREATE TABLE orders (...)"
+            ]
+          },
+          "Documentation":{
+            "type":"string",
+            "example":"This is the initial setup for the database."
+          },
+          "SQLQueries":{
+            "type":"string",
+            "example":"SELECT * FROM users;"
+          }
+        }
+      },
+      "QuestionRequest":{
+        "type":"object",
+        "properties":{
+          "Question":{
+            "type":"string",
+            "example":"What tables exist in the database?"
+          }
+        }
+      },
+      "AnswerResponse":{
+        "type":"object",
+        "properties":{
+          "Answer":{
+            "type":"string",
+            "example":"The database contains tables: users, orders."
+          }
+        }
+      }
+    }
+  }
+}

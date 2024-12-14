@@ -1,0 +1,27 @@
+services:
+  dev:
+    image: mcr.microsoft.com/devcontainers/python
+    container_name: dev
+    volumes:
+      - ../..:/workspaces:cached
+
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+    # Runs app on the same network as the database container.
+    network_mode: service:db
+
+  db:
+    image: pgvector/pgvector:pg17
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: ai_assistant
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  db_data:

@@ -1,0 +1,45 @@
+{
+    "name": "dev",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "dev",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "features": { // See https://containers.dev/implementors/features/ for more information. 
+        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+        "ghcr.io/devcontainers/features/node:1": {},
+        "ghcr.io/guiyomh/features/just:0": {}
+    },
+    "containerEnv": {
+        // Keep pipenv environment in .venv so dependencies are cached locally
+        // (avoids having to re-download the dependencies every time container is rebuilt)
+        "PIPENV_VENV_IN_PROJECT": "1"
+    },
+    "postAttachCommand": "pipenv install -d",
+    "postCreateCommand": "just init",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.vscode-pylance",
+                "ms-python.python",
+                "ms-python.debugpy",
+                "charliermarsh.ruff"
+                
+            ],
+            "settings": {
+                "[python]":{
+                    "terminal.activateEnvInCurrentTerminal": true,
+                    "defaultInterpreterPath": ".venv/bin/python",
+                    "editor.formatOnSave": true,
+                    "editor.defaultFormatter": "charliermarsh.ruff",
+                    "analysis.extraPaths": ["./backend/src"], 
+                    "testing.pytestArgs": ["backend"],
+                    "testing.unittestEnabled": false,
+                    "testing.pytestEnabled": true,
+                    "editor.codeActionsOnSave": {
+                        "source.fixAll": "explicit",
+                        "source.organizeImports": "explicit"
+                    }
+                }
+            }
+        }
+    }
+}
